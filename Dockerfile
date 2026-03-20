@@ -48,7 +48,7 @@ RUN apt-get update \
  && python3 -m pip install --no-cache-dir --break-system-packages runpod \
  && rm -rf /var/lib/apt/lists/*
 
-RUN if ! id -u runpod >/dev/null 2>&1; then useradd -m -u 1000 -s /bin/bash runpod; fi \
+RUN if ! id -u runpod >/dev/null 2>&1; then useradd -m -s /bin/bash runpod; fi \
  && mkdir -p /opt/koboldcpp/bin /opt/koboldcpp/releases /workspace/models /workspace/cache /logs \
  && chown -R runpod:runpod /opt/koboldcpp /workspace /logs
 
