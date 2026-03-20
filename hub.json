@@ -1,0 +1,262 @@
+{
+  "title": "KoboldCPP RunPod MI300X Auto-Healing",
+  "description": "AMD-first KoboldCPP template for RunPod MI300X pods with ROCm detection, NVIDIA fallback, health checks, model bootstrap, and Discord alerts.",
+  "type": "serverless",
+  "category": "language",
+  "iconUrl": "https://placehold.co/512x512/0f172a/ffffff.png?text=KoboldCPP+ROCm",
+  "config": {
+    "runsOn": "GPU",
+    "endpointType": "LB",
+    "containerDiskInGb": 40,
+    "gpuCount": 1,
+    "allowedCudaVersions": [
+      "12.8",
+      "12.7",
+      "12.6",
+      "12.5",
+      "12.4",
+      "12.3",
+      "12.2",
+      "12.1",
+      "12.0",
+      "11.8",
+      "11.7"
+    ],
+    "presets": [
+      {
+        "name": "MI300X Balanced",
+        "defaults": {
+          "KCPP_BACKEND": "amd",
+          "KCPP_PRESET": "balanced",
+          "AUTO_DOWNLOAD_MODELS": true,
+          "HF_MODEL_PRESETS": "balanced,coding",
+          "KCPP_THREADS": 0,
+          "KCPP_BLAS_THREADS": 0,
+          "KCPP_CONTEXT_SIZE": 8192,
+          "KCPP_GPU_LAYERS": 999
+        }
+      },
+      {
+        "name": "MI300X Coding",
+        "defaults": {
+          "KCPP_BACKEND": "amd",
+          "KCPP_PRESET": "coding",
+          "AUTO_DOWNLOAD_MODELS": true,
+          "HF_MODEL_PRESETS": "coding",
+          "KCPP_THREADS": 0,
+          "KCPP_BLAS_THREADS": 0,
+          "KCPP_CONTEXT_SIZE": 8192,
+          "KCPP_GPU_LAYERS": 999
+        }
+      },
+      {
+        "name": "MI300X Roleplay",
+        "defaults": {
+          "KCPP_BACKEND": "amd",
+          "KCPP_PRESET": "roleplay",
+          "AUTO_DOWNLOAD_MODELS": true,
+          "HF_MODEL_PRESETS": "roleplay",
+          "KCPP_THREADS": 0,
+          "KCPP_BLAS_THREADS": 0,
+          "KCPP_CONTEXT_SIZE": 8192,
+          "KCPP_GPU_LAYERS": 999
+        }
+      },
+      {
+        "name": "NVIDIA Fallback",
+        "defaults": {
+          "KCPP_BACKEND": "nvidia",
+          "KCPP_PRESET": "balanced",
+          "AUTO_DOWNLOAD_MODELS": true,
+          "HF_MODEL_PRESETS": "balanced",
+          "KCPP_THREADS": 0,
+          "KCPP_BLAS_THREADS": 0,
+          "KCPP_CONTEXT_SIZE": 8192,
+          "KCPP_GPU_LAYERS": 999
+        }
+      }
+    ],
+    "env": [
+      {
+        "key": "KCPP_BACKEND",
+        "input": {
+          "name": "Backend",
+          "type": "string",
+          "description": "Auto-detect ROCm on AMD and CUDA on NVIDIA, or force a backend if you need to troubleshoot.",
+          "options": [
+            { "label": "Auto", "value": "auto" },
+            { "label": "AMD ROCm", "value": "amd" },
+            { "label": "NVIDIA CUDA", "value": "nvidia" },
+            { "label": "CPU fallback", "value": "cpu" }
+          ],
+          "default": "auto",
+          "advanced": false
+        }
+      },
+      {
+        "key": "KCPP_PRESET",
+        "input": {
+          "name": "Preset",
+          "type": "string",
+          "description": "Default runtime profile and model bootstrap hint.",
+          "options": [
+            { "label": "Balanced", "value": "balanced" },
+            { "label": "Coding", "value": "coding" },
+            { "label": "Roleplay", "value": "roleplay" },
+            { "label": "General", "value": "general" },
+            { "label": "Small", "value": "small" }
+          ],
+          "default": "balanced",
+          "advanced": false
+        }
+      },
+      {
+        "key": "AUTO_DOWNLOAD_MODELS",
+        "input": {
+          "type": "boolean",
+          "name": "Auto-download starter models",
+          "description": "Download community GGUF models on first run and keep them on the mounted volume.",
+          "default": true,
+          "trueValue": "1",
+          "falseValue": "0"
+        }
+      },
+      {
+        "key": "HF_MODEL_PRESETS",
+        "input": {
+          "name": "Starter model presets",
+          "type": "string",
+          "description": "Comma-separated Hugging Face preset names to bootstrap on first boot.",
+          "default": "balanced,coding",
+          "advanced": false
+        }
+      },
+      {
+        "key": "HF_MODEL_LIST",
+        "input": {
+          "name": "Custom model list",
+          "type": "string",
+          "description": "Semicolon-separated entries in the form repo_id|filename|alias.",
+          "default": "",
+          "advanced": true
+        }
+      },
+      {
+        "key": "HF_MODEL_QUANTIZATION",
+        "input": {
+          "name": "Preferred quantization",
+          "type": "string",
+          "description": "Preferred GGUF quantization token when auto-picking models.",
+          "options": [
+            { "label": "Q4_K_M", "value": "Q4_K_M" },
+            { "label": "Q5_K_M", "value": "Q5_K_M" },
+            { "label": "Q6_K", "value": "Q6_K" },
+            { "label": "Q8_0", "value": "Q8_0" }
+          ],
+          "default": "Q4_K_M",
+          "advanced": true
+        }
+      },
+      {
+        "key": "KCPP_MODEL",
+        "input": {
+          "name": "Manual model path",
+          "type": "string",
+          "description": "Absolute path to a GGUF model on the mounted volume.",
+          "default": "",
+          "advanced": true
+        }
+      },
+      {
+        "key": "KCPP_CONTEXT_SIZE",
+        "input": {
+          "name": "Context size",
+          "type": "number",
+          "description": "Context window for KoboldCPP.",
+          "min": 1024,
+          "max": 131072,
+          "default": 8192,
+          "advanced": true
+        }
+      },
+      {
+        "key": "KCPP_GPU_LAYERS",
+        "input": {
+          "name": "GPU layers",
+          "type": "number",
+          "description": "How many layers to offload to the GPU.",
+          "min": 0,
+          "max": 999,
+          "default": 999,
+          "advanced": true
+        }
+      },
+      {
+        "key": "KCPP_THREADS",
+        "input": {
+          "name": "CPU threads",
+          "type": "number",
+          "description": "Set to 0 to auto-detect.",
+          "min": 0,
+          "max": 256,
+          "default": 0,
+          "advanced": true
+        }
+      },
+      {
+        "key": "KCPP_BLAS_THREADS",
+        "input": {
+          "name": "BLAS threads",
+          "type": "number",
+          "description": "Set to 0 to match CPU threads.",
+          "min": 0,
+          "max": 256,
+          "default": 0,
+          "advanced": true
+        }
+      },
+      {
+        "key": "KCPP_EXTRA_ARGS",
+        "input": {
+          "name": "Extra KoboldCPP flags",
+          "type": "string",
+          "description": "Paste additional CLI flags here, such as --usecublas mmq or --highpriority.",
+          "default": "",
+          "advanced": true
+        }
+      },
+      {
+        "key": "ALLOW_CPU_FALLBACK",
+        "input": {
+          "type": "boolean",
+          "name": "Allow CPU fallback",
+          "description": "Permit CPU mode if no GPU backend is available.",
+          "default": false,
+          "trueValue": "1",
+          "falseValue": "0"
+        }
+      },
+      {
+        "key": "DISCORD_WEBHOOK_URL",
+        "input": {
+          "name": "Discord webhook URL",
+          "type": "string",
+          "description": "Optional webhook for health alerts and safe-mode notifications.",
+          "default": "",
+          "advanced": true
+        }
+      },
+      {
+        "key": "KCPP_ENABLE_SOURCE_REPAIR",
+        "input": {
+          "type": "boolean",
+          "name": "Enable source repair",
+          "description": "Only enable if you have a source checkout and want the container to attempt git-based repairs.",
+          "default": false,
+          "trueValue": "1",
+          "falseValue": "0"
+        }
+      }
+    ]
+  }
+}
