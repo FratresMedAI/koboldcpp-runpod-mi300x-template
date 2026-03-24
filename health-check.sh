@@ -252,7 +252,44 @@ health_check_runtime_binary() {
 
 health_check_release_fresh() {
   local backend="${1:-$(gpu_detect_backend)}"
-  auto_patch_release_is_current "$backend"
+  local local_meta latest_meta
+  local_meta="$(auto_patch_local_metadata_path "$backend")"
+
+  if [[ ! -f "$local_meta" ]]; then
+    health_log "release metadata missing; skipping freshness gate for backend=$backend"
+    return 0
+  fi
+
+  latest_meta="$(mktemp)"
+  if ! auto_patch_resolve_release_metadata "$backend" >"$latest_meta"; then
+    health_log "release freshness check unavailable; continuing with existing runtime for backend=$backend"
+    rm -f "$latest_meta"
+    return 0
+  fi
+
+  python3 - "$local_meta" "$latest_meta" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+local_meta = json.loads(Path(sys.argv[1]).read_text())
+latest_meta = json.loads(Path(sys.argv[2]).read_text())
+
+same = (
+    local_meta.get("tag") == latest_meta.get("tag")
+    and local_meta.get("asset_name") == latest_meta.get("asset_name")
+    and local_meta.get("asset_digest", "") == latest_meta.get("asset_digest", "")
+)
+raise SystemExit(0 if same else 1)
+PY
+  local rc=$?
+  rm -f "$latest_meta"
+
+  if [[ "$rc" -ne 0 ]]; then
+    health_log "release metadata indicates a newer runtime is available for backend=$backend"
+  fi
+
+  return "$rc"
 }
 
 health_check_model_selection() {

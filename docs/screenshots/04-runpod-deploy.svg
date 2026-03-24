@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title>RunPod deploy placeholder</title>
+  <desc>Placeholder illustration for the deployment step.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" rx="36" fill="url(#bg)"/>
+  <rect x="64" y="64" width="1072" height="547" rx="28" fill="#111827" opacity="0.92" stroke="#334155" stroke-width="4"/>
+  <rect x="150" y="170" width="900" height="80" rx="18" fill="#1f2937" stroke="#334155" stroke-width="3"/>
+  <rect x="150" y="280" width="900" height="80" rx="18" fill="#0b1220" stroke="#334155" stroke-width="3"/>
+  <rect x="150" y="390" width="900" height="80" rx="18" fill="#1f2937" stroke="#334155" stroke-width="3"/>
+  <text x="600" y="286" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="700">RunPod deploy</text>
+  <text x="600" y="348" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="26">Placeholder illustration for the README</text>
+  <text x="600" y="410" text-anchor="middle" fill="#a78bfa" font-family="Consolas, monospace" font-size="22">Deploy → watch logs → open 5001/http</text>
+</svg>
