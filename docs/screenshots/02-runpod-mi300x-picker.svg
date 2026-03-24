@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title>RunPod MI300X picker placeholder</title>
+  <desc>Placeholder illustration for the MI300X GPU selection step.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" rx="36" fill="url(#bg)"/>
+  <rect x="64" y="64" width="1072" height="547" rx="28" fill="#111827" opacity="0.92" stroke="#334155" stroke-width="4"/>
+  <rect x="116" y="126" width="180" height="420" rx="20" fill="#1f2937" stroke="#334155" stroke-width="3"/>
+  <rect x="328" y="126" width="756" height="420" rx="20" fill="#0b1220" stroke="#334155" stroke-width="3"/>
+  <text x="600" y="286" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="700">RunPod MI300X picker</text>
+  <text x="600" y="348" text-anchor="middle" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="26">Placeholder illustration for the README</text>
+  <text x="600" y="410" text-anchor="middle" fill="#f59e0b" font-family="Consolas, monospace" font-size="22">Select AMD ROCm hardware and attach /workspace</text>
+</svg>

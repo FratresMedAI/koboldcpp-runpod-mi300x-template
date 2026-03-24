@@ -165,8 +165,19 @@ def choose_gguf_file(siblings, preferred_quant: str):
 def download_file(repo: str, filename: str, target: pathlib.Path):
     url = f"https://huggingface.co/{repo}/resolve/main/{filename}?download=1"
     req = urllib.request.Request(url, headers=headers())
-    with urllib.request.urlopen(req, timeout=1200) as resp, target.open("wb") as fh:
-        shutil.copyfileobj(resp, fh)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(prefix=f".{target.name}.", suffix=".part", dir=str(target.parent))
+    tmp_path = pathlib.Path(tmp_name)
+    try:
+        with os.fdopen(fd, "wb") as fh, urllib.request.urlopen(req, timeout=1200) as resp:
+            shutil.copyfileobj(resp, fh)
+        tmp_path.replace(target)
+    except Exception:
+        try:
+            tmp_path.unlink()
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def write_link(alias: str, real_path: pathlib.Path):
@@ -194,7 +205,14 @@ def download_one(entry):
     repo_dir.mkdir(parents=True, exist_ok=True)
     target = repo_dir / filename
 
-    if not target.exists():
+    expected_size = 0
+    for item in siblings:
+        candidate = item.get("rfilename") or item.get("name") or ""
+        if candidate == filename:
+            expected_size = int(item.get("size") or 0)
+            break
+
+    if not target.exists() or (expected_size and target.stat().st_size != expected_size):
         download_file(repo, filename, target)
 
     link = write_link(alias, target)
@@ -222,10 +240,14 @@ for entry in entries:
     except Exception as exc:
         results.append({"repo": entry["repo"], "alias": entry["alias"], "error": str(exc)})
 
+failures = [result for result in results if "error" in result]
+
 manifest = {
     "generated_at": datetime.now(timezone.utc).isoformat(),
+    "failure_count": len(failures),
     "preset": KCPP_PRESET,
     "preferred_quantization": PREFERRED_QUANT,
+    "status": "complete" if not failures else "partial",
     "entries": results,
 }
 MANIFEST_FILE.write_text(json.dumps(manifest, indent=2, sort_keys=True))
@@ -241,6 +263,13 @@ if default_model:
     if default_link.exists() or default_link.is_symlink():
         default_link.unlink()
     default_link.symlink_to(default_model)
+
+if failures:
+    summary = "; ".join(
+        f"{result.get('alias') or result.get('repo')}: {result.get('error', 'unknown error')}"
+        for result in failures[:5]
+    )
+    raise SystemExit(f"{len(failures)} model download(s) failed: {summary}")
 
 MARKER_FILE.write_text(json.dumps({"complete": True, "generated_at": datetime.now(timezone.utc).isoformat()}, indent=2))
 PY

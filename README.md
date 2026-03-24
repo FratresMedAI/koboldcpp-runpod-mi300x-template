@@ -13,8 +13,20 @@
 - 📈 **Community-presets** for roleplay, coding, general chat, and lightweight usage.
 - 🧪 **Health endpoint** at `http://127.0.0.1:8080/health` for monitoring.
 - 🔔 **Optional Discord alerts** via `DISCORD_WEBHOOK_URL`.
-- 🔄 **Boot-time release notifier** that logs when newer upstream builds are available.
+- 🪄 **Release update notifier** that logs when a newer YellowRoseCx release is available.
+<<<<<<< C:/Users/Besn Daddy/Documents/GitHub/koboldcpp-runpod-mi300x-template/README.md
+<<<<<<< C:/Users/Besn Daddy/Documents/GitHub/koboldcpp-runpod-mi300x-template/README.md
+<<<<<<< C:/Users/Besn Daddy/Documents/GitHub/koboldcpp-runpod-mi300x-template/README.md
 - 💾 **Volume-friendly design** with everything important stored under `/workspace`.
+=======
+- 💾 **Volume-friendly design** with persistent state stored under `/workspace`.
+>>>>>>> C:/Users/Besn Daddy/.windsurf/worktrees/koboldcpp-runpod-mi300x-template/koboldcpp-runpod-mi300x-template-18d26806/README.md
+=======
+- 💾 **Volume-friendly design** with persistent state stored under `/workspace`.
+>>>>>>> C:/Users/Besn Daddy/.windsurf/worktrees/koboldcpp-runpod-mi300x-template/koboldcpp-runpod-mi300x-template-18d26806/README.md
+=======
+- 💾 **Volume-friendly design** with persistent state stored under `/workspace`.
+>>>>>>> C:/Users/Besn Daddy/.windsurf/worktrees/koboldcpp-runpod-mi300x-template/koboldcpp-runpod-mi300x-template-18d26806/README.md
 
 ## Quick deploy: AMD MI300X on RunPod
 
@@ -25,7 +37,7 @@
 3. Filter by **AMD**.
 4. Select **KoboldCPP RunPod MI300X Template**.
 
-![RunPod Hub AMD filter placeholder](./docs/screenshots/01-runpod-hub-amd-filter.png)
+![RunPod Hub AMD filter placeholder](./docs/screenshots/01-runpod-hub-amd-filter.svg)
 
 ### Step 2 — Choose your MI300X pod
 
@@ -34,7 +46,7 @@
 3. Attach a persistent network volume.
 4. Mount it at `/workspace`.
 
-![RunPod GPU picker placeholder](./docs/screenshots/02-runpod-mi300x-picker.png)
+![RunPod GPU picker placeholder](./docs/screenshots/02-runpod-mi300x-picker.svg)
 
 ### Step 3 — Set the template environment
 
@@ -46,16 +58,16 @@ Use these defaults for a clean first boot:
 - `HF_MODEL_PRESETS=balanced,coding`
 - `DISCORD_WEBHOOK_URL=` optional
 
-![RunPod env vars placeholder](./docs/screenshots/03-runpod-env-vars.png)
+![RunPod env vars placeholder](./docs/screenshots/03-runpod-env-vars.svg)
 
 ### Step 4 — Deploy
 
 1. Click **Deploy**.
 2. Wait for the boot logs.
-3. Open the proxy URL for port `5001`.
+3. Open the proxy URL for port `5001/http`.
 4. Check `/logs/health.log` if the pod enters safe mode.
 
-![RunPod deploy placeholder](./docs/screenshots/04-runpod-deploy.png)
+![RunPod deploy placeholder](./docs/screenshots/04-runpod-deploy.svg)
 
 ## What’s included
 
@@ -83,7 +95,7 @@ Use these defaults for a clean first boot:
 
 ## Ports
 
-- `5001/tcp` — KoboldCPP UI/API
+- `5001/http` — KoboldCPP UI/API
 - `8080/http` — health endpoint
 
 ## Persistent storage layout
@@ -94,7 +106,7 @@ Recommended subpaths:
 
 - `/workspace/models`
 - `/workspace/cache`
-- `/workspace/logs`
+- Logs are written to `/logs` inside the container.
 
 ## Recommended presets
 

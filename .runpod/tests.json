@@ -1,0 +1,60 @@
+{
+  "tests": [
+    {
+      "name": "health action returns success",
+      "input": {
+        "action": "health"
+      },
+      "timeout": 10000
+    },
+    {
+      "name": "metadata action returns success",
+      "input": {
+        "action": "metadata"
+      },
+      "timeout": 10000
+    },
+    {
+      "name": "default action returns success",
+      "input": {
+        "action": "status"
+      },
+      "timeout": 10000
+    }
+  ],
+  "config": {
+    "gpuTypeId": "AMD Instinct MI300X OAM",
+    "gpuCount": 1,
+    "env": [
+      {
+        "key": "KCPP_BACKEND",
+        "value": "amd"
+      },
+      {
+        "key": "KCPP_PRESET",
+        "value": "balanced"
+      },
+      {
+        "key": "AUTO_DOWNLOAD_MODELS",
+        "value": "0"
+      },
+      {
+        "key": "ALLOW_CPU_FALLBACK",
+        "value": "0"
+      }
+    ],
+    "allowedCudaVersions": [
+      "12.8",
+      "12.7",
+      "12.6",
+      "12.5",
+      "12.4",
+      "12.3",
+      "12.2",
+      "12.1",
+      "12.0",
+      "11.8",
+      "11.7"
+    ]
+  }
+}
