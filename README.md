@@ -220,3 +220,4 @@ Once approved, your fork can also qualify for Hub revenue sharing on its own.
 ## Final takeaway
 
 This is the template that finally makes AMD KoboldCPP feel first-class on RunPod.
+[![Runpod](https://api.runpod.io/badge/FratresMedAI/koboldcpp-runpod-mi300x-template)](https://console.runpod.io/hub/FratresMedAI/koboldcpp-runpod-mi300x-template)
