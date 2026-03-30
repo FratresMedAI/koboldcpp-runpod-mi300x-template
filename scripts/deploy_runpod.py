@@ -4,6 +4,7 @@ import os
 import sys
 import urllib.error
 import urllib.request
+import urllib.parse
 
 
 def env(name: str, default: str = "") -> str:
@@ -33,6 +34,17 @@ def normalize_runpod_webhook_url(raw_url: str) -> str:
     return url
 
 
+def add_api_key_query(url: str, api_key: str) -> str:
+    if not api_key:
+        return url
+    parsed = urllib.parse.urlparse(url)
+    query = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
+    if "api_key" not in query:
+        query["api_key"] = [api_key]
+    new_query = urllib.parse.urlencode(query, doseq=True)
+    return urllib.parse.urlunparse(parsed._replace(query=new_query))
+
+
 def trigger_webhook() -> int:
     webhook = normalize_runpod_webhook_url(env("RUNPOD_DEPLOY_WEBHOOK_URL"))
     if not webhook:
@@ -50,6 +62,7 @@ def trigger_webhook() -> int:
         "branch": env("GITHUB_REF_NAME"),
     }
 
+    webhook = add_api_key_query(webhook, api_key)
     print(f"Triggering RunPod deploy webhook: {webhook}")
     try:
         headers = {}
