@@ -222,4 +222,34 @@ Once approved, your fork can also qualify for Hub revenue sharing on its own.
 ## Final takeaway
 
 This is the template that finally makes AMD KoboldCPP feel first-class on RunPod.
+
+## Git automation (GitHub Actions -> RunPod)
+
+This repository includes a workflow at `.github/workflows/runpod-deploy.yml` that runs on every push to `main` and:
+
+1. builds and pushes the container image to `ghcr.io`
+2. triggers your RunPod deploy endpoint (webhook or GraphQL)
+
+### Required GitHub secrets
+
+Set these in **GitHub -> Settings -> Secrets and variables -> Actions**.
+
+Use one of the two deploy methods:
+
+- **Webhook method (recommended first)**
+  - `RUNPOD_DEPLOY_WEBHOOK_URL`
+
+- **GraphQL method (advanced)**
+  - `RUNPOD_API_KEY`
+  - `RUNPOD_GRAPHQL_MUTATION`
+  - `RUNPOD_GRAPHQL_VARIABLES_JSON` (optional JSON object)
+
+If both are provided, the workflow tries the webhook first.
+
+### Notes
+
+- The image tags pushed by Actions are:
+  - `ghcr.io/<owner>/<repo>:latest`
+  - `ghcr.io/<owner>/<repo>:sha-<commit_sha>`
+- The deploy helper script is `scripts/deploy_runpod.py`.
 [![Runpod](https://api.runpod.io/badge/FratresMedAI/koboldcpp-runpod-mi300x-template)](https://console.runpod.io/hub/FratresMedAI/koboldcpp-runpod-mi300x-template)
