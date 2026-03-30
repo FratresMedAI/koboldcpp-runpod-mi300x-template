@@ -11,7 +11,6 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   build-and-push:
@@ -33,6 +32,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Normalize image name
+        id: meta
+        run: |
+          echo "image_name=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
       - name: Build and push image
         uses: docker/build-push-action@v6
         with:
@@ -40,14 +44,14 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.image_name }}:latest
+            ${{ env.REGISTRY }}/${{ steps.meta.outputs.image_name }}:sha-${{ github.sha }}
 
       - name: Emit image outputs
         id: out
         run: |
-          echo "image_uri=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}" >> "$GITHUB_OUTPUT"
-          echo "image_latest=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest" >> "$GITHUB_OUTPUT"
+          echo "image_uri=${{ env.REGISTRY }}/${{ steps.meta.outputs.image_name }}:sha-${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "image_latest=${{ env.REGISTRY }}/${{ steps.meta.outputs.image_name }}:latest" >> "$GITHUB_OUTPUT"
 
   trigger-runpod:
     runs-on: ubuntu-latest
