@@ -24,10 +24,21 @@ def post_json(url: str, payload: dict, headers: dict) -> dict:
     return json.loads(body)
 
 
+def normalize_runpod_webhook_url(raw_url: str) -> str:
+    url = (raw_url or "").strip()
+    if not url:
+        return ""
+    if ".api.runpod.ai" in url and not url.rstrip("/").endswith("/run"):
+        return url.rstrip("/") + "/run"
+    return url
+
+
 def trigger_webhook() -> int:
-    webhook = env("RUNPOD_DEPLOY_WEBHOOK_URL")
+    webhook = normalize_runpod_webhook_url(env("RUNPOD_DEPLOY_WEBHOOK_URL"))
     if not webhook:
         return 2
+
+    api_key = env("RUNPOD_API_KEY")
 
     payload = {
         "action": "deploy",
@@ -41,7 +52,10 @@ def trigger_webhook() -> int:
 
     print(f"Triggering RunPod deploy webhook: {webhook}")
     try:
-        response = post_json(webhook, payload, headers={})
+        headers = {}
+        if api_key:
+            headers["Authorization"] = f"Bearer {api_key}"
+        response = post_json(webhook, payload, headers=headers)
     except urllib.error.HTTPError as exc:
         body = exc.read().decode("utf-8", errors="ignore")
         print(f"Webhook HTTP error: {exc.code} {body}", file=sys.stderr)
