@@ -23,6 +23,7 @@ HEALTH_PORT="${HEALTH_PORT:-8080}"
 KCPP_PORT="${KCPP_PORT:-5001}"
 KCPP_HOST="${KCPP_HOST:-0.0.0.0}"
 KCPP_BACKEND="${KCPP_BACKEND:-auto}"
+KCPP_RUNTIME_MODE="${KCPP_RUNTIME_MODE:-auto}"
 KCPP_PRESET="${KCPP_PRESET:-balanced}"
 AUTO_HEAL="${AUTO_HEAL:-1}"
 SAFE_MODE="${SAFE_MODE:-0}"
@@ -65,6 +66,43 @@ cleanup() {
   exit "$rc"
 }
 trap cleanup EXIT INT TERM
+
+detect_runtime_mode() {
+  local mode
+  mode="$(printf '%s' "${KCPP_RUNTIME_MODE:-auto}" | tr '[:upper:]' '[:lower:]')"
+
+  case "$mode" in
+    pod|serverless)
+      printf '%s\n' "$mode"
+      return 0
+      ;;
+    auto|"")
+      if [[ -n "${RUNPOD_ENDPOINT_ID:-}" || -n "${RUNPOD_SERVERLESS_URL:-}" || -n "${RUNPOD_WEBHOOK_GET_JOB:-}" ]]; then
+        printf 'serverless\n'
+      else
+        printf 'pod\n'
+      fi
+      return 0
+      ;;
+    *)
+      printf 'pod\n'
+      return 0
+      ;;
+  esac
+}
+
+run_serverless_worker() {
+  local backend
+  backend="$(backend_from_env_or_gpu)"
+  export GPU_NAME="$(gpu_detect_gpu_name)"
+  export GPU_IS_MI300X="0"
+  gpu_detect_is_mi300x && export GPU_IS_MI300X="1" || true
+  export GPU_BACKEND="$backend"
+
+  health_write_status "starting" "launching RunPod serverless handler" "$backend" "python3 ${SCRIPT_DIR}/handler.py" "${KCPP_MODEL:-}"
+  log "runtime mode=serverless; launching RunPod handler"
+  exec python3 "${SCRIPT_DIR}/handler.py"
+}
 
 start_health_server() {
   python3 - "$HEALTH_PORT" "$KCPP_STATUS_FILE" <<'PY' &
@@ -244,10 +282,17 @@ run_safe_mode() {
 }
 
 main() {
-  local backend runtime_wrapper runtime_backend
+  local backend runtime_wrapper runtime_backend runtime_mode
   local -a launch_flags=()
 
   ensure_default_permissions
+  runtime_mode="$(detect_runtime_mode)"
+  log "runtime mode resolved to ${runtime_mode}"
+
+  if [[ "$runtime_mode" == "serverless" ]]; then
+    run_serverless_worker
+  fi
+
   start_health_server
   backend="$(backend_from_env_or_gpu)"
   export GPU_NAME="$(gpu_detect_gpu_name)"

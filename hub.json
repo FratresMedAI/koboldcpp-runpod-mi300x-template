@@ -1,7 +1,7 @@
 {
   "title": "KoboldCPP RunPod MI300X Auto-Healing",
   "description": "AMD-first KoboldCPP template for RunPod MI300X pods with ROCm detection, NVIDIA fallback, health checks, model bootstrap, and Discord alerts.",
-  "type": "serverless",
+  "type": "pod",
   "category": "language",
   "iconUrl": "https://placehold.co/512x512/0f172a/ffffff.png?text=KoboldCPP+ROCm",
   "config": {
@@ -27,8 +27,9 @@
         "name": "MI300X Balanced",
         "defaults": {
           "KCPP_BACKEND": "amd",
+          "KCPP_RUNTIME_MODE": "pod",
           "KCPP_PRESET": "balanced",
-          "AUTO_DOWNLOAD_MODELS": true,
+          "AUTO_DOWNLOAD_MODELS": false,
           "HF_MODEL_PRESETS": "balanced,coding",
           "KCPP_THREADS": 0,
           "KCPP_BLAS_THREADS": 0,
@@ -40,8 +41,9 @@
         "name": "MI300X Coding",
         "defaults": {
           "KCPP_BACKEND": "amd",
+          "KCPP_RUNTIME_MODE": "pod",
           "KCPP_PRESET": "coding",
-          "AUTO_DOWNLOAD_MODELS": true,
+          "AUTO_DOWNLOAD_MODELS": false,
           "HF_MODEL_PRESETS": "coding",
           "KCPP_THREADS": 0,
           "KCPP_BLAS_THREADS": 0,
@@ -53,8 +55,9 @@
         "name": "MI300X Roleplay",
         "defaults": {
           "KCPP_BACKEND": "amd",
+          "KCPP_RUNTIME_MODE": "pod",
           "KCPP_PRESET": "roleplay",
-          "AUTO_DOWNLOAD_MODELS": true,
+          "AUTO_DOWNLOAD_MODELS": false,
           "HF_MODEL_PRESETS": "roleplay",
           "KCPP_THREADS": 0,
           "KCPP_BLAS_THREADS": 0,
@@ -66,8 +69,9 @@
         "name": "NVIDIA Fallback",
         "defaults": {
           "KCPP_BACKEND": "nvidia",
+          "KCPP_RUNTIME_MODE": "pod",
           "KCPP_PRESET": "balanced",
-          "AUTO_DOWNLOAD_MODELS": true,
+          "AUTO_DOWNLOAD_MODELS": false,
           "HF_MODEL_PRESETS": "balanced",
           "KCPP_THREADS": 0,
           "KCPP_BLAS_THREADS": 0,
@@ -94,6 +98,21 @@
         }
       },
       {
+        "key": "KCPP_RUNTIME_MODE",
+        "input": {
+          "name": "Runtime mode",
+          "type": "string",
+          "description": "Use pod mode for long-running UI/API pods, or serverless mode for handler-driven jobs.",
+          "options": [
+            { "label": "Auto", "value": "auto" },
+            { "label": "Pod", "value": "pod" },
+            { "label": "Serverless", "value": "serverless" }
+          ],
+          "default": "pod",
+          "advanced": false
+        }
+      },
+      {
         "key": "KCPP_PRESET",
         "input": {
           "name": "Preset",
@@ -116,7 +135,7 @@
           "type": "boolean",
           "name": "Auto-download starter models",
           "description": "Download community GGUF models on first run and keep them on the mounted volume.",
-          "default": true,
+          "default": false,
           "trueValue": "1",
           "falseValue": "0"
         }

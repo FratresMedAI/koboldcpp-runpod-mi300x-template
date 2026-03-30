@@ -6,27 +6,15 @@
 
 ## Why this is the one people will actually use
 
-- 🚀 **MI300X-selectable** in the RunPod console because the template is published as AMD-first.
-- 🧠 **ROCm-native** on AMD using `YellowRoseCx/koboldcpp-rocm`.
-- ⚡ **NVIDIA fallback** to the official `LostRuins/koboldcpp` binary when CUDA is detected.
-- 🛡️ **Auto-healing boot flow** with release refresh, dependency checks, and safe mode.
-- 📈 **Community-presets** for roleplay, coding, general chat, and lightweight usage.
-- 🧪 **Health endpoint** at `http://127.0.0.1:8080/health` for monitoring.
-- 🔔 **Optional Discord alerts** via `DISCORD_WEBHOOK_URL`.
-- 🪄 **Release update notifier** that logs when a newer YellowRoseCx release is available.
-<<<<<<< C:/Users/Besn Daddy/Documents/GitHub/koboldcpp-runpod-mi300x-template/README.md
-<<<<<<< C:/Users/Besn Daddy/Documents/GitHub/koboldcpp-runpod-mi300x-template/README.md
-<<<<<<< C:/Users/Besn Daddy/Documents/GitHub/koboldcpp-runpod-mi300x-template/README.md
-- 💾 **Volume-friendly design** with everything important stored under `/workspace`.
-=======
-- 💾 **Volume-friendly design** with persistent state stored under `/workspace`.
->>>>>>> C:/Users/Besn Daddy/.windsurf/worktrees/koboldcpp-runpod-mi300x-template/koboldcpp-runpod-mi300x-template-18d26806/README.md
-=======
-- 💾 **Volume-friendly design** with persistent state stored under `/workspace`.
->>>>>>> C:/Users/Besn Daddy/.windsurf/worktrees/koboldcpp-runpod-mi300x-template/koboldcpp-runpod-mi300x-template-18d26806/README.md
-=======
-- 💾 **Volume-friendly design** with persistent state stored under `/workspace`.
->>>>>>> C:/Users/Besn Daddy/.windsurf/worktrees/koboldcpp-runpod-mi300x-template/koboldcpp-runpod-mi300x-template-18d26806/README.md
+- **MI300X-selectable** in the RunPod console because the template is published as AMD-first.
+- **ROCm-native** on AMD using `YellowRoseCx/koboldcpp-rocm`.
+- **NVIDIA fallback** to the official `LostRuins/koboldcpp` binary when CUDA is detected.
+- **Auto-healing boot flow** with release refresh, dependency checks, and safe mode.
+- **Community-presets** for roleplay, coding, general chat, and lightweight usage.
+- **Health endpoint** at `http://127.0.0.1:8080/health` for monitoring.
+- **Optional Discord alerts** via `DISCORD_WEBHOOK_URL`.
+- **Release update notifier** that logs when a newer YellowRoseCx release is available.
+- **Volume-friendly design** with persistent state stored under `/workspace`.
 
 ## Quick deploy: AMD MI300X on RunPod
 
@@ -53,7 +41,8 @@
 Use these defaults for a clean first boot:
 
 - `KCPP_BACKEND=amd`
-- `AUTO_DOWNLOAD_MODELS=1`
+- `KCPP_RUNTIME_MODE=pod`
+- `AUTO_DOWNLOAD_MODELS=0`
 - `KCPP_PRESET=balanced`
 - `HF_MODEL_PRESETS=balanced,coding`
 - `DISCORD_WEBHOOK_URL=` optional
@@ -128,6 +117,7 @@ Recommended subpaths:
 ## Environment variables users will care about
 
 - `KCPP_BACKEND=auto|amd|nvidia|cpu`
+- `KCPP_RUNTIME_MODE=auto|pod|serverless`
 - `KCPP_PRESET=balanced|coding|roleplay|general|small`
 - `KCPP_MODEL=/workspace/models/.../model.gguf`
 - `KCPP_CONTEXT_SIZE=8192`
@@ -135,7 +125,7 @@ Recommended subpaths:
 - `KCPP_THREADS=0`
 - `KCPP_BLAS_THREADS=0`
 - `KCPP_EXTRA_ARGS=--usecublas mmq`
-- `AUTO_DOWNLOAD_MODELS=1`
+- `AUTO_DOWNLOAD_MODELS=0|1`
 - `HF_MODEL_PRESETS=coding,roleplay`
 - `HF_MODEL_LIST=repo_id|filename|alias;repo2|filename|alias`
 - `HF_MODEL_QUANTIZATION=Q4_K_M`

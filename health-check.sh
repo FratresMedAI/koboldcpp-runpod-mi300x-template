@@ -311,7 +311,9 @@ health_check_full() {
   health_log "preflight starting for backend=$backend"
   health_check_backend_dependencies "$backend" || return 1
   health_check_runtime_binary "$backend" || return 1
-  health_check_release_fresh "$backend" || return 1
+  if ! health_check_release_fresh "$backend"; then
+    health_log "continuing with current runtime despite freshness mismatch for backend=$backend"
+  fi
   health_check_model_selection || return 1
   health_log "preflight completed successfully for backend=$backend"
   return 0
